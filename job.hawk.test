@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# 2 nodes:
+#PBS -N LAT-Test
+#PBS -l select=2:mpiprocs=1
+#______PBS -l select=1:mpiprocs=1:host=r44c2t1n3+1:mpiprocs=1:host=r42c3t1n1
+#______PBS -l select=1:mpiprocs=1:host=r44c2t1n3+1:mpiprocs=1:host=r44c2t1n2
+#______PBS -l select=1:mpiprocs=1:host=r32c2t1n3+1:mpiprocs=1:host=r32c2t1n2
+#______PBS -q hpe
+#
+#PBS -l walltime=00:25:00
+
+
+module load mpt
+
+unset MPI_NUM_QUICKS
+MPI_LIB=mpi_st
+MPI_IB_DCIS=0
+MPI_IB_TM=0
+MPI_BUFFER_MAX=0
+MPI_IB_XRC=0
+MPI_IB_FAILOVER_RESET=0
+
+export MPI_LIB MPI_IB_DCIS MPI_IB_TM MPI_BUFFER_MAX MPI_IB_XRC MPI_IB_FAILOVER_RESET
+
+
+
+
+cd ${HOME}/psrc/lat
+if [ $? -ne 0 ]; then
+	echo " can't change into lat directory"
+	exit 47
+fi
+
+mpirun -np 2 ./lat.hawk.test
+
+## cray method to start a parallel job # aprun -n 2 -N 1  ./lat.xc30
+
